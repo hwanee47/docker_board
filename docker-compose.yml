@@ -19,6 +19,24 @@ services:
     networks:
       - board
 
+  db2:
+    image: mysql:5.7
+    ports:
+      - "3307:3307"
+    volumes:
+      - db:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=1111
+      - MYSQL_DATABASE=jpastart
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin -uroot -p1111 ping -h localhost" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - board
+
   board:
     depends_on:
       db:
