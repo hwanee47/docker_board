@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   hwanee-db:
-    image: mysql:5.7
+    image: mysql:lastest
     ports:
       - "3306:3306"
     volumes:
