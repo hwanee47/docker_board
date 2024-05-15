@@ -1,11 +1,11 @@
 spring:
-    application: 
+    application:
         name: jpaservice
     datasource:
-        url: jdbc:log4jdbc:mysql://db:3306/jpastart?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        url: jdbc:mysql://db:3306/jpastart?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
         username: root
         password: 1111
-        driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         properties:
             hibernate:
