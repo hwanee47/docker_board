@@ -11,12 +11,18 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=1111
       - MYSQL_DATABASE=jpastart
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin -uroot -p1111 ping -h localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
     networks:
       - board
 
   board:
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     build: .
     ports:
       - "8080:8080"
