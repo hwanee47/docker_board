@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-06-07T12:41:37+0900",
-    comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-7.3.1.jar, environment: Java 11.0.18 (Oracle Corporation)"
+    date = "2024-05-15T18:38:08+0900",
+    comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-7.3.1.jar, environment: Java 17.0.11 (Amazon.com Inc.)"
 )
 @Component
 public class BoardResMapStructImpl implements BoardResMapStruct {
