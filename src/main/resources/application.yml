@@ -3,7 +3,7 @@ spring:
         name: jpaservice
     datasource:
         url: jdbc:mysql://db:3306/jpastart?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
-        username: root
+        username: hwanee
         password: 1111
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
