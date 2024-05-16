@@ -11,6 +11,10 @@ pipeline {
         githubSshId = "seoulit-ssh-key"
     }
 
+    tools {
+        jdk 'jdk-11' // Jenkins에서 미리 설정된 JDK 이름
+    }
+
     stages {
         stage('Pull Codes from Github') {
             steps {
