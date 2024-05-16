@@ -8,14 +8,15 @@ pipeline {
         ecrUrl = "471112630428.dkr.ecr.ap-northeast-2.amazonaws.com/board"
         repository = "board"
         deployHost = "43.201.55.230"
+        githubSshId = "seoulit-ssh-key"
     }
 
     stages {
         stage('Pull Codes from Github') {
             steps {
-                sshagent(['seoulit-ssh-key']) {
+                sshagent(credentials: ["${githubSshId}"]) {
                     checkout([$class: 'GitSCM', branches: [[name: '*/docker-compose']],
-                              userRemoteConfigs: [[url: 'git@github.com:hwanee47/docker_board.git']]])
+                              userRemoteConfigs: [[url: 'git@github.com:hwanee47/docker_board.git', credentialsId: "${githubSshId}"]]])
                 }
             }
         }
