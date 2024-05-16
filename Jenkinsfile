@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Pull Codes from Github') {
             steps {
-                sshagent(['github-ssh-key']) {
+                sshagent(['seoulit-ssh-key']) {
                     checkout([$class: 'GitSCM', branches: [[name: '*/docker-compose']],
                               userRemoteConfigs: [[url: 'git@github.com:hwanee47/docker_board.git']]])
                 }
