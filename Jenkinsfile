@@ -13,6 +13,10 @@ pipeline {
         DEPLOY_HOST = ''
     }
 
+    tools {
+        jdk 'JDK 17' // Jenkins에서 미리 설정된 JDK 17 이름
+    }
+
     // 작업정의
     stages {
         stage('Step 1. Pull codes from Github') {
