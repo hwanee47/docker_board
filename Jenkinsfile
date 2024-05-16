@@ -13,8 +13,9 @@ pipeline {
     stages {
         stage('Pull Codes from Github') {
             steps {
-                sshagent(credentials: ['github-ssh-key']) {
-                    checkout scm
+                sshagent(['github-ssh-key']) {
+                    checkout([$class: 'GitSCM', branches: [[name: '*/docker-compose']],
+                              userRemoteConfigs: [[url: 'git@github.com:hwanee47/docker_board.git']]])
                 }
             }
         }
