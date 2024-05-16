@@ -15,33 +15,38 @@ pipeline {
 
     // 작업정의
     stages {
-
         stage('Step 1. Pull codes from Github') {
             steps {
                 checkout scm
             }
-            postBuild("Step 1")
+            post {
+                success {
+                    postBuild("Step 1")
+                }
+                failure {
+                    postBuild("Step 1")
+                }
+            }
         }
 
         stage('Step 2. Build codes by Gradle') {
             steps {
                 sh "./gradlew clean build"
             }
-            postBuild("Step 2")
+            post {
+                success {
+                    postBuild("Step 2")
+                }
+                failure {
+                    postBuild("Step 2")
+                }
+            }
         }
-
     }
-
 }
 
 // 공통 post 빌드 함수
 def postBuild(stepName) {
-    post {
-        success {
-            echo "Success ${stepName}"
-        }
-        failure {
-            echo "Fail ${stepName}"
-        }
-    }
+    echo "Success ${stepName}"
+    // 여기에 추가적인 작업을 할 수 있습니다.
 }
