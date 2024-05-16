@@ -5,7 +5,7 @@ pipeline {
         mainDir = "."
         ecrLoginHelper = "docker-credential-ecr-login"
         region = "ap-northeast-2"
-        ecrUrl = "471112630428.dkr.ecr.ap-northeast-2.amazonaws.com/board"
+        ecrUrl = "471112630428.dkr.ecr.ap-northeast-2.amazonaws.com"
         repository = "board"
         deployHost = "43.201.55.230"
         githubSshId = "seoulit-ssh-key"
