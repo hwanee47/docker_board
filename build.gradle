@@ -8,7 +8,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.insight'
-version = '0.0.1-SNAPSHOT'
+version = 'ver1.0'
 
 java.sourceCompatibility = JavaVersion.VERSION_11
 
