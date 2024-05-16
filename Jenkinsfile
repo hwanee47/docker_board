@@ -1,73 +1,47 @@
 pipeline {
     agent any
 
+    // 변수 선언
     environment {
-        mainDir = "."
-        ecrLoginHelper = "docker-credential-ecr-login"
-        region = "ap-northeast-2"
-        ecrUrl = "471112630428.dkr.ecr.ap-northeast-2.amazonaws.com"
-        repository = "board"
-        deployHost = "52.79.39.184"
-        githubSshId = "seoulit-ssh-key"
-        AWS_CLI_PATH = "/opt/homebrew/bin" // AWS CLI가 설치된 경로를 지정
-        PATH = "${AWS_CLI_PATH}:${env.PATH}"
-        DOCKER_NETWORK = "hwanee_board" // Docker 네트워크 이름
+        TIME_ZONE = 'Asia/Seoul'
+        PROFILE = 'local'
+        AWS_CREDENTIAL_NAME = 'aws-key'
+        DEPLOY_CREDENTIAL_NAME = 'deploy-ssh-key'
+        REGION = 'ap-northeast-2'
+        ECR_PATH = '471112630428.dkr.ecr.ap-northeast-2.amazonaws.com'
+        ECR_REPOSITORY_NAME = 'board'
+        DEPLOY_HOST = ''
     }
 
-    tools {
-        jdk 'JDK 17' // Jenkins에서 미리 설정된 JDK 17 이름
-    }
-
+    // 작업정의
     stages {
-        stage('Pull Codes from Github') {
+
+        stage('Step 1. Pull codes from Github') {
             steps {
-                sshagent(credentials: ["${githubSshId}"]) {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/docker-compose']],
-                              userRemoteConfigs: [[url: 'git@github.com:hwanee47/docker_board.git', credentialsId: "${githubSshId}"]]])
-                }
+                checkout scm
             }
+            postBuild("Step 1")
         }
 
-        stage('Build Codes by Gradle') {
+        stage('Step 2. Build codes by Gradle') {
             steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build --info --stacktrace'
+                sh "./gradlew clean build"
             }
+            postBuild("Step 2")
         }
 
-        stage('Build Docker Image by Jib & Push to AWS ECR Repository') {
-            steps {
-                withAWS(region: "${region}", credentials: "aws-key") {
-                    ecrLogin()
-                    script {
-                        def ecrPassword = sh(returnStdout: true, script: "aws ecr get-login-password --region ${region}").trim()
-                        env.awsEcrPassword = ecrPassword
-                    }
-                    sh """
-                        curl -O https://amazon-ecr-credential-helper-releases.s3.us-east-2.amazonaws.com/0.4.0/linux-amd64/${ecrLoginHelper}
-                        chmod +x ${ecrLoginHelper}
-                        ./gradlew jib -Djib.to.image=${ecrUrl}/${repository}:${currentBuild.number} -Djib.console='plain' -DawsEcrPassword=$awsEcrPassword
-                    """
-                }
-            }
-        }
+    }
 
-        stage('Deploy to AWS EC2 VM') {
-            steps {
-                withAWS(region: "${region}", credentials: "aws-key") {
-                    sshagent(credentials: ["deploy-ssh-key"]) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} '
-                            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-                            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-                            aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUrl};
-                            docker network create ${DOCKER_NETWORK} || true;
-                            docker run -d --network ${DOCKER_NETWORK} -p 8080:8080 ${ecrUrl}/${repository}:${currentBuild.number};
-                            '
-                        """
-                    }
-                }
-            }
+}
+
+// 공통 post 빌드 함수
+def postBuild(stepName) {
+    post {
+        success {
+            echo "Success ${stepName}"
+        }
+        failure {
+            echo "Fail ${stepName}"
         }
     }
 }
