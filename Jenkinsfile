@@ -7,10 +7,11 @@ pipeline {
         region = "ap-northeast-2"
         ecrUrl = "471112630428.dkr.ecr.ap-northeast-2.amazonaws.com"
         repository = "board"
-        deployHost = "52.79.39.184"
+        deployHost = "43.201.55.230"
         githubSshId = "seoulit-ssh-key"
         AWS_CLI_PATH = "/opt/homebrew/bin" // AWS CLI가 설치된 경로를 지정
         PATH = "${AWS_CLI_PATH}:${env.PATH}"
+        DOCKER_NETWORK = "board" // Docker 네트워크 이름
     }
 
     tools {
@@ -60,7 +61,8 @@ pipeline {
                             export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
                             export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                             aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUrl};
-                            docker run -d -p 80:8888 ${ecrUrl}/${repository}:${currentBuild.number};
+                            docker network create ${DOCKER_NETWORK} || true;
+                            docker run -d --network ${DOCKER_NETWORK} -p 80:8888 ${ecrUrl}/${repository}:${currentBuild.number};
                             '
                         """
                     }
