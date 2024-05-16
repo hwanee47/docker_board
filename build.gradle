@@ -51,12 +51,14 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-
 jib {
 	from {
 		image = 'adoptopenjdk/openjdk11:alpine-jre'
 	}
-
+	to {
+		image = "${project.findProperty('jib.to.image')}"
+		credHelper = 'ecr-login' // AWS ECR 자격 증명 설정
+	}
 	container {
 		entrypoint = ['java', '-Dspring.profiles.active=test', '-jar', 'board-ver1.0.jar']
 
