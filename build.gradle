@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+	id 'com.google.cloud.tools.jib' version '3.1.4'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -48,4 +49,31 @@ dependencies {
 	implementation "org.mapstruct:mapstruct:1.5.5.Final"
 	annotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+
+jib {
+	from {
+		image = 'adoptopenjdk/openjdk11:alpine-jre'
+	}
+
+	container {
+		entrypoint = ['java', '-Dspring.profiles.active=test', '-jar', 'board-ver1.0.jar']
+
+		jvmFlags = ['-Xms512m', '-Xmx512m', '-Xdebug', '-XshowSettings:vm', '-XX:+UnlockExperimentalVMOptions', '-XX:+UseContainerSupport']
+		ports = ['8080']
+
+		environment = [SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS"]
+		labels = [version:project.version, name:project.name, group:project.group]
+
+		creationTime = 'USE_CURRENT_TIMESTAMP'
+		format = 'Docker'
+	}
+	extraDirectories {
+		paths {
+			path {
+				from = file('build/libs')
+			}
+		}
+	}
 }
