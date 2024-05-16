@@ -9,6 +9,8 @@ pipeline {
         repository = "board"
         deployHost = "43.201.55.230"
         githubSshId = "seoulit-ssh-key"
+        AWS_CLI_PATH = "/opt/homebrew/bin" // AWS CLI가 설치된 경로를 지정
+        PATH = "${AWS_CLI_PATH}:${env.PATH}"
     }
 
     tools {
