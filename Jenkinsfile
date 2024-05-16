@@ -7,7 +7,7 @@ pipeline {
         region = "ap-northeast-2"
         ecrUrl = "471112630428.dkr.ecr.ap-northeast-2.amazonaws.com"
         repository = "board"
-        deployHost = "43.201.55.230"
+        deployHost = "52.79.39.184"
         githubSshId = "seoulit-ssh-key"
         AWS_CLI_PATH = "/opt/homebrew/bin" // AWS CLI가 설치된 경로를 지정
         PATH = "${AWS_CLI_PATH}:${env.PATH}"
