@@ -34,11 +34,12 @@ pipeline {
 
         stage('Build Docker Image by Jib & Push to AWS ECR Repository') {
             steps {
-                withAWS(region: "${region}", credentials: "aws-key") {
+                withAWS(region:"${region}", credentials:"aws-key") {
                     ecrLogin()
                     sh """
                         curl -O https://amazon-ecr-credential-helper-releases.s3.us-east-2.amazonaws.com/0.4.0/linux-amd64/${ecrLoginHelper}
-                        chmod +x ${ecrLoginHelper}
+
+                        cd ${mainDir}
                         ./gradlew jib -Djib.to.image=${ecrUrl}/${repository}:${currentBuild.number} -Djib.console='plain'
                     """
                 }
