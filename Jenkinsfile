@@ -45,7 +45,7 @@ pipeline {
                     sh """
                         curl -O https://amazon-ecr-credential-helper-releases.s3.us-east-2.amazonaws.com/0.4.0/linux-amd64/${ecrLoginHelper}
                         chmod +x ${ecrLoginHelper}
-                        ./gradlew jib -Djib.to.image=${ecrUrl}/${repository}:${currentBuild.number} -Djib.console='plain' -DawsEcrPassword=$awsEcrPassword
+                        ./gradlew jib -Djib.to.image=${ecrUrl}:${repository}:${currentBuild.number} -Djib.console='plain' -DawsEcrPassword=$awsEcrPassword
                     """
                 }
             }
@@ -53,13 +53,15 @@ pipeline {
 
         stage('Deploy to AWS EC2 VM') {
             steps {
-                sshagent(credentials: ["deploy-ssh-key"]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} '
-                        aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUrl};
-                        docker run -d -p 80:8888 ${ecrUrl}/${repository}:${currentBuild.number};
-                        '
-                    """
+                withAWS(region: "${region}", credentials: "aws-key") {
+                    sshagent(credentials: ["deploy-key"]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} '
+                            aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUrl};
+                            docker run -d -p 80:8888 ${ecrUrl}:${repository}:${currentBuild.number};
+                            '
+                        """
+                    }
                 }
             }
         }
