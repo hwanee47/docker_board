@@ -46,6 +46,23 @@ pipeline {
                 }
             }
         }
+
+        stage('Step 3. Dockerizing project by dockerfile') {
+            steps {
+                sh '''
+                    docker build -t ${ECR_PATH}/${ECR_REPOSITORY_NAME}:${BUILD_NAME} .
+                    docker tag ${ECR_PATH}/${ECR_REPOSITORY_NAME}:${BUILD_NAME} ${ECR_PATH}/${ECR_REPOSITORY_NAME}:latest
+                   '''
+            }
+            post {
+                success {
+                    postBuild("Step 3")
+                }
+                failure {
+                    postBuild("Step 3")
+                }
+            }
+        }
     }
 }
 
