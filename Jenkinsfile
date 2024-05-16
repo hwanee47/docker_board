@@ -57,8 +57,10 @@ pipeline {
                     sshagent(credentials: ["deploy-ssh-key"]) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} '
+                            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                             aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUrl};
-                            docker run -d -p 80:8888 ${ecrUrl}:${repository}:${currentBuild.number};
+                            docker run -d -p 80:8888 ${ecrUrl}/${repository}:${currentBuild.number};
                             '
                         """
                     }
