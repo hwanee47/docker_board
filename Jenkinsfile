@@ -61,7 +61,6 @@ pipeline {
                             export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
                             export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                             aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUrl};
-                            docker network create ${DOCKER_NETWORK} || true;
                             docker run -d --network ${DOCKER_NETWORK} -p 80:8888 ${ecrUrl}/${repository}:${currentBuild.number};
                             '
                         """
