@@ -11,7 +11,7 @@ pipeline {
         githubSshId = "seoulit-ssh-key"
         AWS_CLI_PATH = "/opt/homebrew/bin" // AWS CLI가 설치된 경로를 지정
         PATH = "${AWS_CLI_PATH}:${env.PATH}"
-        DOCKER_NETWORK = "board" // Docker 네트워크 이름
+        DOCKER_NETWORK = "hwanee_board" // Docker 네트워크 이름
     }
 
     tools {
